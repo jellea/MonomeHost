@@ -50,8 +50,8 @@
 
 ////////////
 /// dbg
-//#define PRINT_DBG(x) Serial.print((x))
-#define PRINT_DBG(x)
+#define PRINT_DBG(x) Serial.print((x))
+//#define PRINT_DBG(x)
 ///////////
 
 

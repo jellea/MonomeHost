@@ -136,6 +136,11 @@ uint8_t MonomeController::CheckDeviceDesc(char* mstr, char* pstr, char* sstr) {
       setup_series(16, 8);
       return 1;
     }
+    if( strncmp(buf, "m100", 4) == 0 ) {
+      // series 128
+      setup_series(16, 8);
+      return 1;
+    }
     if( strncmp(buf, "m256-", 5) == 0 ) {
       // series 256
       setup_series(16, 16);
