@@ -64,6 +64,7 @@
 // Only single port chips are currently supported by the library,
 // so only three endpoints are allocated.
 #define FTDI_MAX_ENDPOINTS	3
+#define MAX_ENDPOINTS  3
 
 /// maximum unpacked size of led buffer,
 /// all frames/elements, 1 byte per led.

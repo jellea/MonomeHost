@@ -62,8 +62,8 @@ MonomeFtdi::MonomeFtdi(USBHost &usb, MonomeReportParser *con) :
   // Setup an empty set of endpoints 
   for (uint32_t i = 0; i < MAX_ENDPOINTS; ++i)
     {
-      epInfo[i].deviceEpNum	= 0;
-      epInfo[i].hostPipeNum	= 0;
+      epInfo[i].epAddr	= 0;
+      epInfo[i].maxPktSize	= 0;
       epInfo[i].maxPktSize	= (i) ? 0 : 8;
       epInfo[i].epAttribs		= 0;
       epInfo[i].bmNakPower  	= (i) ? USB_NAK_NOWAIT : USB_NAK_MAX_POWER;
@@ -389,16 +389,16 @@ void MonomeFtdi::EndpointXtract(uint32_t conf, uint32_t iface, uint32_t alt, uin
     }
 
   // Fill in the endpoint info structure 
-  epInfo[index].deviceEpNum = pep->bEndpointAddress & 0x0F;
+  epInfo[index].epAddr = pep->bEndpointAddress & 0x0F;
   epInfo[index].maxPktSize = pep->wMaxPacketSize;
 
   if (index == epDataInIndex)
     {
-      pipe = UHD_Pipe_Alloc(bAddress, epInfo[index].deviceEpNum, UOTGHS_HSTPIPCFG_PTYPE_BLK, UOTGHS_HSTPIPCFG_PTOKEN_IN, epInfo[index].maxPktSize, 0, UOTGHS_HSTPIPCFG_PBK_1_BANK);
+      pipe = UHD_Pipe_Alloc(bAddress, epInfo[index].epAddr, UOTGHS_HSTPIPCFG_PTYPE_BLK, UOTGHS_HSTPIPCFG_PTOKEN_IN, epInfo[index].maxPktSize, 0, UOTGHS_HSTPIPCFG_PBK_1_BANK);
     }
   else if (index == epDataOutIndex)
     {
-      pipe = UHD_Pipe_Alloc(bAddress, epInfo[index].deviceEpNum, UOTGHS_HSTPIPCFG_PTYPE_BLK, UOTGHS_HSTPIPCFG_PTOKEN_OUT, epInfo[index].maxPktSize, 0, UOTGHS_HSTPIPCFG_PBK_1_BANK);
+      pipe = UHD_Pipe_Alloc(bAddress, epInfo[index].epAddr, UOTGHS_HSTPIPCFG_PTYPE_BLK, UOTGHS_HSTPIPCFG_PTOKEN_OUT, epInfo[index].maxPktSize, 0, UOTGHS_HSTPIPCFG_PBK_1_BANK);
     }
 
   // Ensure pipe allocation is okay 
@@ -408,7 +408,7 @@ void MonomeFtdi::EndpointXtract(uint32_t conf, uint32_t iface, uint32_t alt, uin
       return;
     }
 
-  epInfo[index].hostPipeNum = pipe;
+  epInfo[index].maxPktSize = pipe;
 
   bNumEP++;
 }
@@ -416,8 +416,8 @@ void MonomeFtdi::EndpointXtract(uint32_t conf, uint32_t iface, uint32_t alt, uin
 
 uint32_t MonomeFtdi::Release()
 {
-  UHD_Pipe_Free(epInfo[epDataInIndex].hostPipeNum);
-  UHD_Pipe_Free(epInfo[epDataOutIndex].hostPipeNum);
+  UHD_Pipe_Free(epInfo[epDataInIndex].maxPktSize);
+  UHD_Pipe_Free(epInfo[epDataOutIndex].maxPktSize);
 
   // Free allocated USB address 
   pUsb->GetAddressPool().FreeAddress(bAddress);
@@ -437,7 +437,7 @@ uint32_t MonomeFtdi::Release()
 // read to internal rx buffer
 uint32_t MonomeFtdi::read(void)
 {
-  return pUsb->inTransfer(bAddress, epInfo[epDataInIndex].deviceEpNum, &rxBytes, rxBuf);
+  return pUsb->inTransfer(bAddress, epInfo[epDataInIndex].epAddr, &rxBytes, rxBuf);
 }
 
 
@@ -446,7 +446,7 @@ uint32_t MonomeFtdi::write(uint32_t datalen, uint8_t *dataptr)
 {
   if (datalen > 255) PRINT_DBG("\r\n WARNING: Trying to send more than 255 bytes down the USB pipe!");
 
-  return pUsb->outTransfer(bAddress, epInfo[epDataOutIndex].deviceEpNum, datalen, dataptr);
+  return pUsb->outTransfer(bAddress, epInfo[epDataOutIndex].epAddr, datalen, dataptr);
 }
 
 uint8_t MonomeFtdi::setControlLineState(uint8_t state) 
