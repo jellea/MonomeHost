@@ -380,37 +380,20 @@ void MonomeFtdi::EndpointXtract(uint32_t conf, uint32_t iface, uint32_t alt, uin
 
   bConfNum = conf;
 
-  uint32_t index = 0;
-  uint32_t pipe = 0;
 
-  if ((pep->bmAttributes & 0x02) == 2)
-    {
-      index = ((pep->bEndpointAddress & 0x80) == 0x80) ? epDataInIndex : epDataOutIndex;
-    }
+     if((pep->bmAttributes & 0x02) == 2) {
+                uint32_t index = ((pep->bEndpointAddress & 0x80) == 0x80) ? epDataInIndex : epDataOutIndex;
+                // Fill in the endpoint info structure
+                epInfo[index].epAddr = (pep->bEndpointAddress & 0x0F);
+                epInfo[index].maxPktSize = pep->wMaxPacketSize;
+                epInfo[index].bmAttribs = pep->bmAttributes;
+                epInfo[index].bmSndToggle = 0;
+                epInfo[index].bmRcvToggle = 0;
 
-  // Fill in the endpoint info structure 
-  epInfo[index].epAddr = pep->bEndpointAddress & 0x0F;
-  epInfo[index].maxPktSize = pep->wMaxPacketSize;
+                bNumEP++;
 
-  if (index == epDataInIndex)
-    {
-      pipe = UHD_Pipe_Alloc(bAddress, epInfo[index].epAddr, UOTGHS_HSTPIPCFG_PTYPE_BLK, UOTGHS_HSTPIPCFG_PTOKEN_IN, epInfo[index].maxPktSize, 0, UOTGHS_HSTPIPCFG_PBK_1_BANK);
-    }
-  else if (index == epDataOutIndex)
-    {
-      pipe = UHD_Pipe_Alloc(bAddress, epInfo[index].epAddr, UOTGHS_HSTPIPCFG_PTYPE_BLK, UOTGHS_HSTPIPCFG_PTOKEN_OUT, epInfo[index].maxPktSize, 0, UOTGHS_HSTPIPCFG_PBK_1_BANK);
-    }
-
-  // Ensure pipe allocation is okay 
-  if (pipe == 0)
-    {
-      PRINT_DBG("\r\n Pipe allocation failure");
-      return;
-    }
-
-  epInfo[index].maxPktSize = pipe;
-
-  bNumEP++;
+                //PrintEndpointDescriptor(pep);
+        }
 }
 
 

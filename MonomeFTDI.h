@@ -154,7 +154,7 @@ class MonomeFtdi : public USBDeviceConfig, public UsbConfigXtracter
   // receive buffer
   uint8_t rxBuf[MONOME_RX_BUF_LEN];
   // receive byte count
-  uint32_t rxBytes;
+  uint16_t rxBytes;
 
  public:
   MonomeFtdi(USBHost &usb, MonomeReportParser *con);
