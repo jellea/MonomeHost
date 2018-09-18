@@ -133,7 +133,7 @@ uint32_t MonomeFtdi::Init(uint32_t parent, uint32_t port, uint32_t lowspeed)
 {
   uint8_t 	buf[sizeof(USB_DEVICE_DESCRIPTOR)];
   uint32_t 	rcode = 0;
-  UsbDevice	*p = NULL;
+  UsbDeviceDefinition	*p = NULL;
   EpInfo	*oldep_ptr = NULL;
   uint32_t 	adkproto = -1;
   uint32_t	num_of_conf = 0;
