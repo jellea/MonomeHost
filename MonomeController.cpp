@@ -508,6 +508,8 @@ void MonomeController::parse_serial_mext(void) {
   uint8_t com;
   uint8_t rx_bytes;
 
+//  PRINT_DBG("parse\n");
+
   rx_bytes = ftdi_.rx_bytes();
   if( rx_bytes ) {
     nbp = 0;
@@ -517,14 +519,14 @@ void MonomeController::parse_serial_mext(void) {
       nbp++;
       switch(com) {
       case 0x20: // grid key up
-        PRINT_DBG("grid key up");
+//        PRINT_DBG("grid key up");
 
 	(*grid_key_)( *prx, *(prx+1), 0);
 	nbp += 2;
 	prx += 2;
 	break;
       case 0x21: // grid key down
-              PRINT_DBG("grid key down");
+//              PRINT_DBG("grid key down");
 
 	(*grid_key_)( *prx, *(prx+1), 1);
 	nbp += 2;

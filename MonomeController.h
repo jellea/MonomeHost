@@ -87,6 +87,8 @@ class MonomeController : public MonomeReportParser {
   // parse serial data
   //  void Parse(MonomeFtdi* ftdi, uint32_t len, uint8_t *buf) {
   void Parse(void) {
+//    PRINT_DBG("parse!!\n");
+
     /// FIXME
     /// as noted in MonomeFTDI.h, this is pretty bad form
     (this->*parse_serial_)();

@@ -19,9 +19,10 @@ void GridKeyCallback(byte x, byte y, byte z) {
   SerialDebug.print(z);
   SerialDebug.print("\r\n");
   
-  monome.led_clear();
-  monome.led_set(x, y, 15);
-  monome.refresh();
+  if (z == 1) {
+    monome.led_set(x, y, 1);
+    monome.refresh();
+  }
 }
 
 void ConnectCallback(const char * name, byte cols, byte rows) {
@@ -32,22 +33,19 @@ void ConnectCallback(const char * name, byte cols, byte rows) {
   SerialDebug.print(" ; rows: ");
   SerialDebug.print(rows);
   SerialDebug.print("\r\n");
-  
+
   monome.led_set(1, 1, 15);
   monome.led_set(1, 3, 10);
   monome.led_set(1, 5, 5);
 
   monome.refresh();
-
 }
-
 
 void setup() {
   SerialDebug.begin(9600);
 
   SerialDebug.print("\n\nStarting...\n");
   delay(200);
-
 
   // set connection callback
   monome.SetConnectCallback(&ConnectCallback);
@@ -62,5 +60,5 @@ void setup() {
 void loop() {
   usb.Task();
   /// alternatively, refresh on every tick:
-  //  monome.refresh();
+//    monome.refresh();
 }

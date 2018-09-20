@@ -455,6 +455,16 @@ uint32_t MonomeFtdi::Poll() {
   if (qNextPollTime <= millis())
     {
       this->read();
+//      PRINT_DBG("read ");
+//      PRINT_DBG(rxBytes);
+//      PRINT_DBG(" ");
+//      for(int i=0; i<12; i++) {
+//        PRINT_DBG(rxBuf[i]);
+//      }
+//
+//      
+//      PRINT_DBG("\n");
+//      
       // keep-alive bytes? or what??
       if(rxBytes > 2) {
 
