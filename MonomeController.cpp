@@ -136,11 +136,21 @@ uint8_t MonomeController::CheckDeviceDesc(char* mstr, char* pstr, char* sstr) {
       setup_series(16, 8);
       return 1;
     }
-    if( strncmp(buf, "m100", 4) == 0 ) {
-      // series 128
-      setup_series(16, 8);
-      return 1;
-    }
+//    if( strncmp(buf, "m10", 3) == 0 ) {
+//      // series 128
+//      PRINT_DBG("\r\n 128 found!");
+//     
+//      setup_mext(16, 8);
+//      return 1;
+//    }
+////
+//    if( strncmp(buf, "m11", 3) == 0 ) {
+//      // arc4
+//      PRINT_DBG("\r\n arc4 found!");
+//     
+//      setup_series(16, 8);
+//      return 1;
+//    }
     if( strncmp(buf, "m256-", 5) == 0 ) {
       // series 256
       setup_series(16, 16);
@@ -370,62 +380,70 @@ uint8_t MonomeController::setup_mext(void)
 
   rx_bytes = 0;
 
-  while(rx_bytes != 6) {
-    delay(1);
-    ftdi_.write(1, &w);  // query  
-
-    delay(1);
-    ftdi_.read();
-
-    delay(1);
-    rx_bytes = ftdi_.rx_bytes();
-  }
+//  while(rx_bytes != 6) {
+//    delay(1);
+//    ftdi_.write(1, &w);  // query  
+////      PRINT_DBG("\r\n ftidway");
+//
+//    delay(1);
+//    ftdi_.read();
+//
+//    delay(1);
+//    rx_bytes = ftdi_.rx_bytes();
+////          PRINT_DBG(rx_bytes);
+//  }
   
-  prx = ftdi_.rx_buf();
-
-  prx++; // 1st returned byte is 0
-  if(*prx == 1) {
+//  prx = ftdi_.rx_buf();
+//
+//  PRINT_DBG("\r\n ftdi");
+//
+//
+//  prx++; // 1st returned byte is 0
+//  if(*prx == 1) {
     desc_.device = eDeviceGrid;
-    prx++;
-    if(*prx == 1) {
-      PRINT_DBG("\r\n monome 64");
-      desc_.rows = 8;
-      desc_.cols = 8;
-    }
-    else if(*prx == 2) {
+//    prx++;
+//    if(*prx == 1) {
+//      PRINT_DBG("\r\n monome 64");
+//      desc_.rows = 8;
+//      desc_.cols = 8;
+//    }
+//    else if(*prx == 2) {
       PRINT_DBG("\r\n monome 128");
       desc_.rows = 8;
       desc_.cols = 16;
-    }
-    else if(*prx == 4) {
-      PRINT_DBG("\r\n monome 256");
-      desc_.rows = 16; 
-      desc_.cols = 16;
-    }
-    else {
-      return 0; // bail
-    }   
-    desc_.tilt = 1;
-  }
-  else if(*prx == 5) {
-    desc_.device = eDeviceArc;
-    desc_.encs = *(++prx);
-  } else {
-    return 0; // bail
-  }
+//    }
+//    else if(*prx == 4) {
+//      PRINT_DBG("\r\n monome 256");
+//      desc_.rows = 16; 
+//      desc_.cols = 16;
+//    }
+//    else {
+//      PRINT_DBG("\r\n bail");
+//      return 0; // bail
+//    }   
+//    desc_.tilt = 1;
+//  }
+//  else if(*prx == 5) {
+//    desc_.device = eDeviceArc;
+//    desc_.encs = *(++prx);
+//  } else {
+//     PRINT_DBG("\r\n bail");
+//
+//    return 0; // bail
+//  }
 
   // get id
-  w = 1;
-  delay(1);
-  ftdi_.write(1, &w);
-  delay(1);
-  ftdi_.read();
-  delay(1);
+  // w = 1;
+  // delay(1);
+  // ftdi_.write(1, &w);
+  // delay(1);
+  // ftdi_.read();
+  // delay(1);
 
-  rx_bytes = ftdi_.rx_bytes();
-  prx = ftdi_.rx_buf();
-  if(*(prx+2) == 'k')
-    desc_.vari = 0;
+  // rx_bytes = ftdi_.rx_bytes();
+  // prx = ftdi_.rx_buf();
+  // if(*(prx+2) == 'k')
+  //   desc_.vari = 0;
   set_funcs();
   (*connect_)("mext", desc_.cols, desc_.rows);
 
@@ -499,11 +517,15 @@ void MonomeController::parse_serial_mext(void) {
       nbp++;
       switch(com) {
       case 0x20: // grid key up
+        PRINT_DBG("grid key up");
+
 	(*grid_key_)( *prx, *(prx+1), 0);
 	nbp += 2;
 	prx += 2;
 	break;
       case 0x21: // grid key down
+              PRINT_DBG("grid key down");
+
 	(*grid_key_)( *prx, *(prx+1), 1);
 	nbp += 2;
 	prx += 2;

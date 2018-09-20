@@ -162,7 +162,7 @@ class MonomeFtdi : public USBDeviceConfig, public UsbConfigXtracter
   // Basic IO 
   //  uint32_t read(uint32_t *nreadbytes, uint8_t *dataptr);
   // always use internal RX butter
-  uint32_t read(void);
+  uint16_t read(void);
   // always use external TX buffer
   uint32_t write(uint32_t datalen, uint8_t *dataptr);
 
@@ -173,7 +173,7 @@ class MonomeFtdi : public USBDeviceConfig, public UsbConfigXtracter
   void setPollPeriod(uint32_t period) { pollPeriod = period; }
 
   // getters for rx count / data
-  uint32_t rx_bytes(void) { return rxBytes > 1 ? rxBytes - 2 : 0; }
+  uint16_t rx_bytes(void) { return rxBytes > 1 ? rxBytes - 2 : 0; }
   uint8_t* rx_buf(void) { return rxBuf + 2; }
 
   // string descriptor utility

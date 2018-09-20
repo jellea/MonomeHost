@@ -418,8 +418,11 @@ uint32_t MonomeFtdi::Release()
 
 
 // read to internal rx buffer
-uint32_t MonomeFtdi::read(void)
+uint16_t MonomeFtdi::read(void)
 {
+//  PRINT_DBG("read ");
+//  PRINT_DBG(rxBuf);
+//  PRINT_DBG("\n");
   return pUsb->inTransfer(bAddress, epInfo[epDataInIndex].epAddr, &rxBytes, rxBuf);
 }
 
@@ -429,6 +432,9 @@ uint32_t MonomeFtdi::write(uint32_t datalen, uint8_t *dataptr)
 {
   if (datalen > 255) PRINT_DBG("\r\n WARNING: Trying to send more than 255 bytes down the USB pipe!");
 
+//  PRINT_DBG("write ");
+//  PRINT_DBG(&dataptr);
+//  PRINT_DBG("\n");
   return pUsb->outTransfer(bAddress, epInfo[epDataOutIndex].epAddr, datalen, dataptr);
 }
 
